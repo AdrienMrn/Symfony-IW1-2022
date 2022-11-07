@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Back;
 
 use App\Entity\Hackathon;
 use App\Form\HackathonType;
@@ -17,7 +17,7 @@ class HackathonController extends AbstractController
     #[Route('/', name: 'index', methods: ['GET'])]
     public function index(HackathonRepository $hackathonRepository): Response
     {
-        return $this->render('hackathon/index.html.twig', [
+        return $this->render('back/hackathon/index.html.twig', [
             'hackathons' => $hackathonRepository->findBy([], ['name' => 'ASC']),
         ]);
     }
@@ -32,12 +32,12 @@ class HackathonController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $hackathonRepository->save($hackathon, true);
 
-            return $this->redirectToRoute('hackathon_show', [
+            return $this->redirectToRoute('back_hackathon_show', [
                 'id' => $hackathon->getId()
             ]);
         }
 
-        return $this->render('hackathon/create.html.twig', [
+        return $this->render('back/hackathon/create.html.twig', [
             'form' => $form->createView()
         ]);
     }
@@ -51,12 +51,12 @@ class HackathonController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('hackathon_show', [
+            return $this->redirectToRoute('back_hackathon_show', [
                 'id' => $hackathon->getId()
             ]);
         }
 
-        return $this->render('hackathon/update.html.twig', [
+        return $this->render('back/hackathon/update.html.twig', [
             'form' => $form->createView()
         ]);
     }
@@ -64,7 +64,7 @@ class HackathonController extends AbstractController
     #[Route('/{id}', name: 'show', requirements: ['id' => '\d'], methods: ['GET'])]
     public function show(Hackathon $hackathon)
     {
-        return $this->render('hackathon/show.html.twig', [
+        return $this->render('back/hackathon/show.html.twig', [
             'hackathon' => $hackathon
         ]);
     }
@@ -78,6 +78,6 @@ class HackathonController extends AbstractController
 
         $hackathonRepository->remove($hackathon, true);
 
-        return $this->redirectToRoute('hackathon_index');
+        return $this->redirectToRoute('back_hackathon_index');
     }
 }

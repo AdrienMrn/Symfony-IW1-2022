@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Back;
 
 use App\Entity\Year;
 use App\Form\YearType;
@@ -16,7 +16,7 @@ class YearController extends AbstractController
     #[Route('/', name: 'app_year_index', methods: ['GET'])]
     public function index(YearRepository $yearRepository): Response
     {
-        return $this->render('year/index.html.twig', [
+        return $this->render('back/year/index.html.twig', [
             'years' => $yearRepository->findAll(),
         ]);
     }
@@ -31,10 +31,10 @@ class YearController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $yearRepository->save($year, true);
 
-            return $this->redirectToRoute('app_year_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('back_app_year_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('year/new.html.twig', [
+        return $this->renderForm('back/year/new.html.twig', [
             'year' => $year,
             'form' => $form,
         ]);
@@ -43,7 +43,7 @@ class YearController extends AbstractController
     #[Route('/{id}', name: 'app_year_show', methods: ['GET'])]
     public function show(Year $year): Response
     {
-        return $this->render('year/show.html.twig', [
+        return $this->render('back/year/show.html.twig', [
             'year' => $year,
         ]);
     }
@@ -57,10 +57,10 @@ class YearController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $yearRepository->save($year, true);
 
-            return $this->redirectToRoute('app_year_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('back_app_year_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('year/edit.html.twig', [
+        return $this->renderForm('back/year/edit.html.twig', [
             'year' => $year,
             'form' => $form,
         ]);
@@ -73,6 +73,6 @@ class YearController extends AbstractController
             $yearRepository->remove($year, true);
         }
 
-        return $this->redirectToRoute('app_year_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('back_app_year_index', [], Response::HTTP_SEE_OTHER);
     }
 }
