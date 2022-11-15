@@ -2,24 +2,52 @@
 
 namespace App\Entity;
 
+use App\Entity\Traits\TimestampableTrait;
 use App\Repository\HackathonRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation\Slug;
+use Gedmo\Mapping\Annotation\SortablePosition;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints\GreaterThan;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Type;
 
 #[ORM\Entity(repositoryClass: HackathonRepository::class)]
+#[UniqueEntity(fields: ['name'])]
 class Hackathon
 {
+    use TimestampableTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(options: ['default' => 0])]
+    #[SortablePosition]
+    private ?int $position = null;
+
+    #[ORM\Column(length: 50)]
+    #[NotBlank(message: 'Cette valeur ne peut pas être vide')]
+    #[Type('string', message: 'Ce type n\'est pas bon')]
+    #[Length(
+        min: 10,
+        max: 50,
+        minMessage: 'Min 10 caractères',
+        maxMessage: 'Min 50 caractères'
+    )]
     private ?string $name = null;
 
+    #[ORM\Column(length: 255)]
+    #[Slug(fields: ['name'])]
+    private ?string $slug = null;
+
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[GreaterThan('+7 days')]
     private ?\DateTimeInterface $startDate = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -49,6 +77,24 @@ class Hackathon
         return $this->id;
     }
 
+    /**
+     * @return int|null
+     */
+    public function getPosition(): ?int
+    {
+        return $this->position;
+    }
+
+    /**
+     * @param int|null $position
+     * @return Hackathon
+     */
+    public function setPosition(?int $position): Hackathon
+    {
+        $this->position = $position;
+        return $this;
+    }
+
     public function getName(): ?string
     {
         return $this->name;
@@ -58,6 +104,24 @@ class Hackathon
     {
         $this->name = $name;
 
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    /**
+     * @param string|null $slug
+     * @return Hackathon
+     */
+    public function setSlug(?string $slug): Hackathon
+    {
+        $this->slug = $slug;
         return $this;
     }
 

@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20221107130851 extends AbstractMigration
+final class Version20221112132359 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -25,6 +25,7 @@ final class Version20221107130851 extends AbstractMigration
         $this->addSql('CREATE SEQUENCE "group_id_seq" INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE hackathon_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE school_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
+        $this->addSql('CREATE SEQUENCE "user_id_seq" INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE year_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE TABLE composition (id INT NOT NULL, nb_dev INT NOT NULL, nb_marketing INT NOT NULL, nb_design INT NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE TABLE document (id INT NOT NULL, hackathon_owner_id INT DEFAULT NULL, group_owner_id INT DEFAULT NULL, type VARCHAR(255) NOT NULL, name VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
@@ -33,12 +34,14 @@ final class Version20221107130851 extends AbstractMigration
         $this->addSql('CREATE TABLE "group" (id INT NOT NULL, composition_id INT DEFAULT NULL, hackathon_id INT DEFAULT NULL, name VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_6DC044C587A2E12 ON "group" (composition_id)');
         $this->addSql('CREATE INDEX IDX_6DC044C5996D90CF ON "group" (hackathon_id)');
-        $this->addSql('CREATE TABLE hackathon (id INT NOT NULL, year_id INT DEFAULT NULL, name VARCHAR(255) NOT NULL, start_date DATE NOT NULL, description TEXT DEFAULT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE hackathon (id INT NOT NULL, year_id INT DEFAULT NULL, name VARCHAR(255) NOT NULL, slug VARCHAR(255) NOT NULL, start_date DATE NOT NULL, description TEXT DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_8B3AF64F40C1FEA7 ON hackathon (year_id)');
         $this->addSql('CREATE TABLE hackathon_school (hackathon_id INT NOT NULL, school_id INT NOT NULL, PRIMARY KEY(hackathon_id, school_id))');
         $this->addSql('CREATE INDEX IDX_A0EC53B1996D90CF ON hackathon_school (hackathon_id)');
         $this->addSql('CREATE INDEX IDX_A0EC53B1C32A47EE ON hackathon_school (school_id)');
         $this->addSql('CREATE TABLE school (id INT NOT NULL, name VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE "user" (id INT NOT NULL, email VARCHAR(180) NOT NULL, roles JSON NOT NULL, password VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE UNIQUE INDEX UNIQ_8D93D649E7927C74 ON "user" (email)');
         $this->addSql('CREATE TABLE year (id INT NOT NULL, date VARCHAR(20) NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE TABLE messenger_messages (id BIGSERIAL NOT NULL, body TEXT NOT NULL, headers TEXT NOT NULL, queue_name VARCHAR(190) NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, available_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, delivered_at TIMESTAMP(0) WITHOUT TIME ZONE DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_75EA56E0FB7336F0 ON messenger_messages (queue_name)');
@@ -70,6 +73,7 @@ final class Version20221107130851 extends AbstractMigration
         $this->addSql('DROP SEQUENCE "group_id_seq" CASCADE');
         $this->addSql('DROP SEQUENCE hackathon_id_seq CASCADE');
         $this->addSql('DROP SEQUENCE school_id_seq CASCADE');
+        $this->addSql('DROP SEQUENCE "user_id_seq" CASCADE');
         $this->addSql('DROP SEQUENCE year_id_seq CASCADE');
         $this->addSql('ALTER TABLE document DROP CONSTRAINT FK_D8698A7610B7EB85');
         $this->addSql('ALTER TABLE document DROP CONSTRAINT FK_D8698A76770C2D86');
@@ -84,6 +88,7 @@ final class Version20221107130851 extends AbstractMigration
         $this->addSql('DROP TABLE hackathon');
         $this->addSql('DROP TABLE hackathon_school');
         $this->addSql('DROP TABLE school');
+        $this->addSql('DROP TABLE "user"');
         $this->addSql('DROP TABLE year');
         $this->addSql('DROP TABLE messenger_messages');
     }

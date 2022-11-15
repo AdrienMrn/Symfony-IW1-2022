@@ -3,13 +3,15 @@
 {% block title %}Listes des Hackathons!{% endblock %}
 
 {% block body %}
+    <br>
     {% for hackathon in hackathons %}
-        {{ hackathon.name }} <br>
-        {{ hackathon.startDate|date('d/m/Y') }} <br>
+        {{ hackathon.name }}
+        {{ hackathon.startDate|date('d/m/Y') }}
         <a href="{{ path('back_hackathon_show', {'id': hackathon.id}) }}">Voir</a>
-        <a href="{{ path('back_hackathon_update', {'id': hackathon.id}) }}">Editer</a> <br>
-        <a href="{{ path('back_hackathon_remove', {'id': hackathon.id, 'token': csrf_token('remove' ~ hackathon.id)}) }}">Supprimer</a> <br>
-
+        <a href="{{ path('back_hackathon_update', {'id': hackathon.id}) }}">Editer</a>
+        <a href="{{ path('back_hackathon_remove', {'id': hackathon.id, 'token': csrf_token('remove' ~ hackathon.id)}) }}">Supprimer</a>
+        <a href="{{ path('back_hackathon_sortable', {'id': hackathon.id, 'position': 'UP'}) }}">UP</a>
+        <a href="{{ path('back_hackathon_sortable', {'id': hackathon.id, 'position': 'DOWN'}) }}">DOWN</a>
         <br>
     {% endfor %}
 {% endblock %}

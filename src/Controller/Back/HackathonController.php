@@ -18,8 +18,17 @@ class HackathonController extends AbstractController
     public function index(HackathonRepository $hackathonRepository): Response
     {
         return $this->render('back/hackathon/index.html.twig', [
-            'hackathons' => $hackathonRepository->findBy([], ['name' => 'ASC']),
+            'hackathons' => $hackathonRepository->findBy([], ['position' => 'ASC']),
         ]);
+    }
+
+    #[Route('/{id}/sortable/{position}', name: 'sortable', requirements: ['position' => 'UP|DOWN'], methods: ['GET'])]
+    public function sortable(Hackathon $hackathon, string $position, EntityManagerInterface $manager): Response
+    {
+        $position === 'UP' ? $hackathon->setPosition($hackathon->getPosition() -3) : $hackathon->setPosition($hackathon->getPosition() +1);
+        $manager->flush();
+
+        return $this->redirectToRoute('back_hackathon_index');
     }
 
     #[Route('/create', name: 'create', methods: ['GET', 'POST'])]
@@ -42,7 +51,7 @@ class HackathonController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/update', name: 'update', requirements: ['id' => '\d'], methods: ['GET', 'POST'])]
+    #[Route('/{id}/update', name: 'update', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     public function update(Hackathon $hackathon, Request $request, EntityManagerInterface $entityManager)
     {
         $form = $this->createForm(HackathonType::class, $hackathon);
@@ -61,7 +70,7 @@ class HackathonController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'show', requirements: ['id' => '\d'], methods: ['GET'])]
+    #[Route('/{id}', name: 'show', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function show(Hackathon $hackathon)
     {
         return $this->render('back/hackathon/show.html.twig', [
@@ -69,7 +78,7 @@ class HackathonController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/remove/{token}', name: 'remove', requirements: ['id' => '\d'], methods: ['GET'])]
+    #[Route('/{id}/remove/{token}', name: 'remove', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function remove(Hackathon $hackathon, string $token, HackathonRepository $hackathonRepository)
     {
         if (!$this->isCsrfTokenValid('remove' . $hackathon->getId(), $token)) {
