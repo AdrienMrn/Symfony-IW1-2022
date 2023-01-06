@@ -4,6 +4,25 @@
 
 {% block body %}
     <br>
+
+    <form method="GET">
+        <input type="text" value="{{ app.request.query.get('query') }}" name="query" placeholder="Recherche...">
+        <select name="year">
+            <option value="">Tous les ans</option>
+            {% for year in years %}
+                <option value="{{ year.id }}" {% if year.id == app.request.query.get('year') %}selected{% endif %}>{{ year.date }}</option>
+            {% endfor %}
+        </select>
+        <select name="limit">
+            <option value="">Tous les hackathons</option>
+            <option value="5" {% if app.request.query.get('limit') == 5 %}selected{% endif %}>5</option>
+            <option value="10" {% if app.request.query.get('limit') == 10 %}selected{% endif %}>10</option>
+            <option value="15" {% if app.request.query.get('limit') == 15 %}selected{% endif %}>15</option>
+        </select>
+        <button type="submit">Rechercher!</button>
+    </form>
+
+    <br>
     {% for hackathon in hackathons %}
         {{ hackathon.name }}
         {{ hackathon.startDate|date('d/m/Y') }}

@@ -5,6 +5,7 @@ namespace App\Controller\Back;
 use App\Entity\Hackathon;
 use App\Form\HackathonType;
 use App\Repository\HackathonRepository;
+use App\Repository\YearRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,10 +16,11 @@ use Symfony\Component\Routing\Annotation\Route;
 class HackathonController extends AbstractController
 {
     #[Route('/', name: 'index', methods: ['GET'])]
-    public function index(HackathonRepository $hackathonRepository): Response
+    public function index(HackathonRepository $hackathonRepository, YearRepository $yearRepository, Request $request): Response
     {
         return $this->render('back/hackathon/index.html.twig', [
-            'hackathons' => $hackathonRepository->findBy([], ['position' => 'ASC']),
+            'years' => $yearRepository->findAll(),
+            'hackathons' => $hackathonRepository->search($request, $request->query->getInt('limit', 10)),
         ]);
     }
 

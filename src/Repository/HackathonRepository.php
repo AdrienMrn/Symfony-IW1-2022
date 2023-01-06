@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Hackathon;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @extends ServiceEntityRepository<Hackathon>
@@ -39,20 +40,32 @@ class HackathonRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return Hackathon[] Returns an array of Hackathon objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('h')
-//            ->andWhere('h.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('h.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * @return Hackathon[] Returns an array of Hackathon objects
+     */
+    public function search(Request $request, int $limit = 10): array
+    {
+         $queryBuilder = $this->createQueryBuilder('h')
+            ->orderBy('h.name', 'ASC')
+            ->setMaxResults($limit)
+         ;
+
+        if ($query = $request->query->get('query')) {
+            $queryBuilder
+                ->andWhere('h.name LIKE :query')
+                ->setParameter('query', '%'.$query.'%')
+            ;
+        }
+
+        if ($year = $request->query->get('year')) {
+            $queryBuilder
+                ->andWhere('h.year = :year')
+                ->setParameter('year', $year)
+            ;
+        }
+
+        return $queryBuilder->getQuery()->getResult();
+    }
 
 //    public function findOneBySomeField($value): ?Hackathon
 //    {
